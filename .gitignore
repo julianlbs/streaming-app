@@ -6,3 +6,4 @@ dist
 
 # Python projects
 .venv
+__pycache__
