@@ -13,5 +13,4 @@ repos:
           "--enable=W",     # Enable warnings
           "--enable=C",     # Enable convention checks
           "--enable=R",     # Enable refactor suggestions
-          "--rcfile=.pylintrc",  # Use a custom pylint configuration if needed
         ]
