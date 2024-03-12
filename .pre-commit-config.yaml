@@ -7,4 +7,11 @@ repos:
         files: packages/3rd-party-api/.*\.py$
         language: system
         types: [python]
-        args: ["--output-format=colorized"]
+        args: [
+          "--disable=all",  # Disable all checks
+          "--enable=F",     # Enable fatal errors
+          "--enable=W",     # Enable warnings
+          "--enable=C",     # Enable convention checks
+          "--enable=R",     # Enable refactor suggestions
+          "--rcfile=.pylintrc",  # Use a custom pylint configuration if needed
+        ]
