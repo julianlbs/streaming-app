@@ -5,3 +5,4 @@ node_modules
 dist
 
 # Python projects
+.venv
