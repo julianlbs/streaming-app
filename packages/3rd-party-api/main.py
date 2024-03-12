@@ -3,7 +3,7 @@
 import random
 from datetime import datetime
 import time
-from flask import Flask
+from flask import Flask, jsonify
 
 app = Flask(__name__)
 
@@ -15,8 +15,9 @@ def get_dummy_data():
     """Get dummy data"""
     # Simulate a 1 second response time
     time.sleep(1)
-    return {
+    data = {
         "ticker": random.choice(tickers),
         "price": random.randint(1, 1000),
         "timestamp": datetime.now()
     }
+    return jsonify(data)
