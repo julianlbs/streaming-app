@@ -21,3 +21,7 @@ def get_dummy_data():
         "timestamp": datetime.now()
     }
     return jsonify(data)
+
+
+if __name__ == '__main__':
+    app.run(port=5000)
