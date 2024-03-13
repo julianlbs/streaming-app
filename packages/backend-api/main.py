@@ -1,81 +1,80 @@
-# """
-# Backend API
-# """
+import asyncio
+import concurrent.futures
 
-import flask
-from get_batch_data import get_batch_data
-from flask_socketio import SocketIO, emit
-from get_data_from_api import get_data_from_api, send_data
-import eventlet
+import websockets
+import json
 
-eventlet.monkey_patch()
+from get_data_from_api import get_data_from_api
 
-app = flask.Flask(__name__)
-app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")
-# flask_cors.CORS(app, resources={r"/*": {"origins": "*"}})
-
-dummy_data: list = []
-api_service_url = 'http://127.0.0.1:5000/get_dummy_data'
+API_URL = "hhttp://127.0.0.1:5000/get_dummy_data"
+NUM_REQUESTS = 5000
+CHUNK_SIZE = 100
 
 
-# async def get_data_on_startup():
-#     """Call get_batch_data when the server starts"""
-#     global dummy_data
-#     await get_batch_data(5000)
-#     data = await get_batch_data(5000)
-#     # dummy_data = data
+async def gather_tasks(start, end):
+    return [get_data_from_api(API_URL, i)
+            for i in range(start, end)]
 
 
-# @app.route("/api")
-# async def get_api_data():
-#     """API that returns the list of 5000 dummy_data"""
-#     if (len(dummy_data) == 0):
-#         await get_data_on_startup()
-#     return flask.jsonify({"data": dummy_data})
+def sort_result(item):
+    return item['req_num']
 
 
-@socketio.on('stream_data')
-def stream_data():
-    for _ in range(5000):
-        send_data()
+async def thread_sort_results(results):
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        ordered_results = list(executor.map(sort_result, results))
+
+    sorted_results = [result for _, result in sorted(
+        zip(ordered_results, results))]
+
+    return sorted_results
 
 
-# def emit_data():
-#     for i in range(5):
-#         socketio.emit('data_point', send_data())
-#         eventlet.sleep(1)
+async def send_results(websocket, result):
+    await websocket.send(json.dumps(result))
 
 
-@socketio.on("create")
-def create_data():
-    send_data()
-    # threads = []
-    # for _ in range(5):  # You can adjust the number of threads as needed
-    #     thread = threading.Thread(target=emit_data)
-    #     threads.append(thread)
-    #     thread.start()
+async def handle_websocket(websocket, path):
+    try:
+        results = []
 
-    # # Wait for all threads to complete
-    # for thread in threads:
-    #     thread.join()
+        while True:
+            message = await websocket.recv()
+            print(f"Received message: {message}")
 
-    # proc = [multiprocessing.Process(target=send_data) for i in range(2)]
+            REQUEST_STATE = 0
 
-    # for p in proc:
-    #     p.start()
-    # for p in proc:
-    #     p.join()
+            if message == "stream_data":
+                REQUEST_STATE += 1
 
-    # with multiprocessing.Pool() as pool:
-    #     for result in pool.imap_unordered(send_data, iterable=[
-    #             api_service_url for _ in range(2)], chunksize=1):
-    #         print('finish')
+                while (REQUEST_STATE < NUM_REQUESTS):
+                    tasks = await gather_tasks(REQUEST_STATE, REQUEST_STATE + CHUNK_SIZE)
+
+                    results = await asyncio.gather(*tasks)
+
+                    sorted_results = await thread_sort_results(results)
+
+                    await send_results(websocket, sorted_results)
+
+                    REQUEST_STATE += CHUNK_SIZE
+
+                await send_results(websocket, "close_connection")
+
+    except websockets.exceptions.ConnectionClosedOK:
+        print("Connection closed by the client.")
 
 
-# thread = threading.Thread(target=create_data)
+async def echo(websocket, path):
+    async for message in websocket:
+        await websocket.send(message)
 
+if __name__ == "__main__":
+    loop = asyncio.get_event_loop()
 
-if __name__ == '__main__':
-    socketio.run(app, port=5001, debug=True,
-                 use_reloader=True, log_output=True)
+    start_server = websockets.serve(
+        handle_websocket, "localhost", 8765)
+
+    loop.run_until_complete(start_server)
+    print("WebSocket server started")
+
+    loop.run_forever()
