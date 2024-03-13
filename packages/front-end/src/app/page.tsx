@@ -21,6 +21,13 @@ export default function Home() {
     })
   })
 
+  useEffect(() => {
+
+    return () => {
+      swr.data?.disconnect()
+    }
+  }, [])
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-white">
       <div className='flex flex-col gap-4'
