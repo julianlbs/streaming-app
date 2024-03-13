@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import type { DataPoint } from '../domain/_index';
-import DataPointTable from '../components/modules/DataPointTable';
+import DataPointTable from '@/components/modules/DataPointTable';
 
 export default function Home() {
   const [dataPointItems, setDataPointItems] = useState<DataPoint[]>([])

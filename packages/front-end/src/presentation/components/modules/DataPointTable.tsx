@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import type { DataPoint } from '../../domain/_index'
+import type { DataPoint } from '@/domain/_index'
 
 interface Props {
   dataPoints: DataPoint[]
