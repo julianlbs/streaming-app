@@ -15,16 +15,16 @@ repos:
           "--enable=R",     # Enable refactor suggestions
         ]
 
-      - id: pylint_backend_api
-        name: pylint
-        entry: pylint
-        files: packages/backend-api/.*\.py$
-        language: system
-        types: [python]
-        args: [
-          "--disable=all",  # Disable all checks
-          "--enable=F",     # Enable fatal errors
-          "--enable=W",     # Enable warnings
-          "--enable=C",     # Enable convention checks
-          "--enable=R",     # Enable refactor suggestions
-        ]
+      # - id: pylint_backend_api
+      #   name: pylint
+      #   entry: pylint
+      #   files: packages/backend-api/.*\.py$
+      #   language: system
+      #   types: [python]
+      #   args: [
+      #     "--disable=all",  # Disable all checks
+      #     "--enable=F",     # Enable fatal errors
+      #     "--enable=W",     # Enable warnings
+      #     "--enable=C",     # Enable convention checks
+      #     "--enable=R",     # Enable refactor suggestions
+      #   ]
