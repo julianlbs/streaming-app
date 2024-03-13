@@ -4,7 +4,6 @@ import React from 'react'
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -22,7 +21,7 @@ function DataPointTable(props: Props) {
     <Table className='w-full'>
       <TableHeader>
         <TableRow>
-          <TableHead className='w-[300px]'>Time</TableHead>
+          <TableHead className='md:w-[300px]'>Time</TableHead>
           <TableHead className=''>Ticker</TableHead>
           <TableHead className=''>Price</TableHead>
         </TableRow>
