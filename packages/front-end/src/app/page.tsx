@@ -34,7 +34,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-white">
+    <main className="flex min-h-screen flex-col items-center justify-between px-8 bg-white">
       <div className='flex flex-col gap-4 w-full'
       >
         <DataPointTable dataPoints={dataPointItems.length > 0 ? dataPointItems.slice(0, 100) : []} />
