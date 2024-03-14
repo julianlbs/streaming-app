@@ -10,6 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import type { DataPoint } from '@/domain/_index'
+import { formatNumberToCurrency } from '../../helpers/formatNumberToCurrency'
 
 interface Props {
   dataPoints: DataPoint[]
@@ -35,7 +36,7 @@ function DataPointTable(props: Props) {
           <TableRow key={i + ' - ' + item.timestamp.toISOString()}>
             <TableCell className=''>{item.timestamp.toLocaleString()}</TableCell>
             <TableCell>{item.ticker}</TableCell>
-            <TableCell className='font-medium'>{item.price}</TableCell>
+            <TableCell className='font-medium'>{formatNumberToCurrency(item.price)}</TableCell>
           </TableRow>
         ))}
       </TableBody>
