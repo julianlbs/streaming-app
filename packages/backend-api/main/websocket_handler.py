@@ -1,5 +1,3 @@
-import asyncio
-
 import websockets
 import json
 from main.stream_handler import StreamHandler
