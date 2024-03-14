@@ -18,7 +18,7 @@ export default function DashboardPage() {
         <div className='flex flex-col gap-4 w-full pb-6'
         >
           <div className='flex justify-end px-2 md:px-0'>
-            <p>Showing last {dataPointItems.length >= 100 ? 100 : 0} / {dataPointItems.length}</p>
+            <p>Lastest {dataPointItems.length >= 100 ? 100 : 0} of {dataPointItems.length}</p>
           </div>
           <DataPointTable dataPoints={dataPointItems} />
         </div>
