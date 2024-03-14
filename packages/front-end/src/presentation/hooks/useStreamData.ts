@@ -1,46 +1,51 @@
 import { useEffect, useState, type SetStateAction } from 'react';
 import type { DataPoint } from '@/domain/_index';
+import { useSocketStore } from '@/presentation/store/useSocketStore';
+import { emitToStreamDataChannel } from '@/infra/stream/emit-event';
 
-export const useStreamData = (url = 'ws://localhost:8765') => {
+export const useStreamData = (url = 'ws://localhost:8765', ticker = "") => {
   const [dataPointItems, setDataPointItems] = useState<DataPoint[]>([])
   const [webSocket, setWebSocket] = useState<WebSocket | undefined>(undefined)
 
-  useEffect(() => {
-    const socket = new WebSocket(url);
-    setWebSocket(socket)
+  const { connectWebSocket } = useSocketStore()
 
-    if (socket) {
+  const connect = () => {
+    setWebSocket(connectWebSocket(url))
+  }
+
+  useEffect(() => {
+    if (webSocket) {
       try {
-        socket.onopen = () => { onSocketOpen(socket) };
-        socket.onmessage = (event) => { onSocketMessage(event, setDataPointItems) };
-        socket.onclose = () => { onSocketClose() };
+        webSocket.onopen = () => { onSocketOpen(webSocket, ticker) };
+        webSocket.onmessage = (event) => { onSocketMessage(event, setDataPointItems) };
+        webSocket.onclose = () => { onSocketClose() };
       } catch (err) {
         console.error(err)
       }
     }
 
     return () => {
-      socket && socket.close();
+      webSocket && webSocket.close();
     };
-  }, [url]);
+  }, [url, webSocket, ticker]);
 
   return {
+    connect,
     dataPointItems,
     webSocket
   }
 }
 
-const onSocketOpen = (socket: WebSocket) => {
+const onSocketOpen = (socket: WebSocket, tickerSearch: string) => {
   console.info('WebSocket client connected');
-  const socketJsonData = JSON.stringify({ channel: 'stream_data', filters: { tickers: ["TICKER_1"] } })
-  socket.send(socketJsonData);
+  emitToStreamDataChannel({ socket, filters: { ticker: tickerSearch } })
 }
 
 const onSocketMessage = (event: MessageEvent<any>, setDataPointItems: (value: SetStateAction<DataPoint[]>) => void) => {
   const resData: { data: DataPoint, req_num: number }[] = JSON.parse(event.data)
   if (typeof resData === 'object') {
     const dataPoints = resData?.map(item => ({ ...item.data, timestamp: new Date(item.data.timestamp) }))
-    setDataPointItems(prev => dataPoints.concat(prev))
+    Array.isArray(dataPoints) && setDataPointItems(prev => dataPoints.concat(prev))
   }
 }
 

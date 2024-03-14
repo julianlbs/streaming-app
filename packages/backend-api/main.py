@@ -34,11 +34,12 @@ async def send_results(websocket, result):
     await websocket.send(json.dumps(result))
 
 
-def filter_results(results, tickers: list = []):
+def filter_results(results, ticker: str):
     filtered_results = []
     for result in results:
-        if "data" in result and "ticker" in result["data"] and (not tickers or result["data"]["ticker"] in tickers):
-            filtered_results.append(result)
+        if "data" in result and "ticker" in result["data"]:
+            if ticker in result["data"]["ticker"]:
+                filtered_results.append(result)
     return filtered_results
 
 
@@ -64,7 +65,7 @@ async def handle_websocket(websocket, path):
 
                     sorted_results = await thread_sort_results(results)
                     filtered_results = filter_results(
-                        sorted_results, tickers=filters["tickers"] if filters["tickers"] is not None else [])
+                        sorted_results, ticker=filters["ticker"] if filters["ticker"] is not None else "")
                     await send_results(websocket, filtered_results)
 
                     REQUEST_STATE += CHUNK_SIZE
