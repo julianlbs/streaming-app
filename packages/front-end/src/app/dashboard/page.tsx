@@ -12,17 +12,17 @@ export default function DashboardPage() {
   const { connect, dataPointItems, webSocket } = useStreamData(process.env.WS_URL, ticker)
 
   return (
-    <>
+    <div className='bg-gradient-to-b bg-slate-50'>
       <FilterBar connectWebSocket={connect} setTicker={setTicker} isSocketConnected={Boolean(webSocket?.OPEN)} />
-      <main className="flex min-h-screen flex-col items-center justify-between md:px-8 bg-white">
-        <div className='flex flex-col gap-4 w-full'
+      <main className="flex min-h-screen flex-col items-center justify-between md:px-8">
+        <div className='flex flex-col gap-4 w-full pb-6'
         >
-          <div className='flex justify-end'>
+          <div className='flex justify-end px-2 md:px-0'>
             <p>Showing last {dataPointItems.length >= 100 ? 100 : 0} / {dataPointItems.length}</p>
           </div>
           <DataPointTable dataPoints={dataPointItems} />
         </div>
       </main>
-    </>
+    </div>
   );
 }
