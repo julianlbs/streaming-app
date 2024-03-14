@@ -3,6 +3,7 @@ import concurrent.futures
 
 import websockets
 import json
+from main.create_websocket_server import WebSocketServer
 
 from get_data_from_api import get_data_from_api
 
@@ -43,7 +44,7 @@ def filter_results(results, ticker: str):
     return filtered_results
 
 
-async def handle_websocket(websocket, path):
+async def websocket_handler(websocket, path):
     try:
         results = []
 
@@ -81,12 +82,5 @@ async def echo(websocket, path):
         await websocket.send(message)
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-
-    start_server = websockets.serve(
-        handle_websocket, "localhost", 8765)
-
-    loop.run_until_complete(start_server)
-    print("WebSocket server started")
-
-    loop.run_forever()
+    ws_server = WebSocketServer(websocket_handler)
+    ws_server.start_server()
