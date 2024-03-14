@@ -13,10 +13,10 @@ export default function Home() {
 
   return (
     <main className="min-h-screen max-h-screen overflow-hidden grid grid-cols-12">
-      <div className='col-span-6 bg-white'>
-        <Image src="/trading-image.jpg" alt="Trading image" width={window.innerWidth} height={window.innerHeight} className='object-cover' />
+      <div className='hidden lg:block lg:col-span-6 bg-white'>
+        <Image src="/trading-image.jpg" alt="Trading image" width={1920} height={3413} priority className='object-cover' />
       </div>
-      <div className='col-span-6 bg-lime-300 flex flex-col justify-center items-center gap-8 h-screen'>
+      <div className='col-span-12 lg:col-span-6 bg-lime-300 flex flex-col justify-center items-center gap-8 h-screen'>
         <h1 className='text-6xl text-center'>Trading for the professionals</h1>
         <ShimmerButton onClick={handleEnterDashboard}>Enter dashboard</ShimmerButton>
       </div>
