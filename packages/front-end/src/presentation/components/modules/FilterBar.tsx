@@ -31,7 +31,7 @@ function FilterBar(props: Props) {
         <p className='inline-block w-[15%]'>Dashboard &copy;</p>
         <form className='flex gap-4' onSubmit={handleStartStream}>
           <Input placeholder='Search ticker' className='w-full md:w-[175px]' onChange={handleChangeTicker} />
-          <Button type='submit'>Search</Button>
+          <Button type='submit'>Stream</Button>
         </form>
       </div>
     </div>
