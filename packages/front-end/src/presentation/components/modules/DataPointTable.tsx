@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useCallback } from 'react'
 import {
   Table,
   TableBody,
@@ -13,10 +13,14 @@ import type { DataPoint } from '@/domain/_index'
 
 interface Props {
   dataPoints: DataPoint[]
+  quantityPerPage?: number
 }
 
 function DataPointTable(props: Props) {
-  const { dataPoints } = props
+  const { dataPoints, quantityPerPage } = props
+
+  const getDataPointsSlice = useCallback((quantity = 100) => dataPoints.slice(0, quantity), [dataPoints])
+
   return (
     <Table className='w-full'>
       <TableHeader>
@@ -27,7 +31,7 @@ function DataPointTable(props: Props) {
         </TableRow>
       </TableHeader>
       <TableBody className='w-full'>
-        {dataPoints.map((item, i) => (
+        {getDataPointsSlice(quantityPerPage).map((item, i) => (
           <TableRow key={i + ' - ' + item.timestamp.toISOString()}>
             <TableCell className=''>{item.timestamp.toLocaleString()}</TableCell>
             <TableCell>{item.ticker}</TableCell>

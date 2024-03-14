@@ -11,7 +11,7 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-between md:px-8 bg-white">
       <div className='flex flex-col gap-4 w-full'
       >
-        <DataPointTable dataPoints={dataPointItems.length > 0 ? dataPointItems.slice(0, 100) : []} />
+        <DataPointTable dataPoints={dataPointItems} />
       </div>
     </main>
   );
