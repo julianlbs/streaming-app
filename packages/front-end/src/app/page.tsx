@@ -1,17 +1,24 @@
 "use client"
 
-import DataPointTable from '@/components/modules/DataPointTable';
-import { useStreamData } from '../presentation/hooks/useStreamData';
+import Image from 'next/image';
+import ShimmerButton from '../presentation/components/ui/shimmer-button';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter()
 
-  const { dataPointItems } = useStreamData(process.env.WS_URL)
+  const handleEnterDashboard = () => {
+    router.push('/dashboard')
+  }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between md:px-8 bg-white">
-      <div className='flex flex-col gap-4 w-full'
-      >
-        <DataPointTable dataPoints={dataPointItems} />
+    <main className="min-h-screen max-h-screen overflow-hidden grid grid-cols-12">
+      <div className='col-span-6 bg-white'>
+        <Image src="/trading-image.jpg" alt="Trading image" width={window.innerWidth} height={window.innerHeight} className='object-cover' />
+      </div>
+      <div className='col-span-6 bg-lime-300 flex flex-col justify-center items-center gap-8 h-screen'>
+        <h1 className='text-6xl text-center'>Trading for the professionals</h1>
+        <ShimmerButton onClick={handleEnterDashboard}>Enter dashboard</ShimmerButton>
       </div>
     </main>
   );
